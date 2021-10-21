@@ -2,14 +2,20 @@ library(R6)
 library(data.table)
 library(BBmisc)
 
+-------------------------------------------------------------------------------------------------------
+  
+# REPID: implementation of the tree structure used for REPID
+  
+-------------------------------------------------------------------------------------------------------
+
 #' @title Performs a single tree based on ICE curves
 #'
 #' @description
-#' Uses functions in customtrees.r for splitting effect curves according to defined objective.
+#' 
 #'
 #' @param effect effect object of IML method FeatureEffect$new()
 #' @param testdata dataset to use for splitting (data.frame with features in columns)
-#' @param objective character string with objective function to use (so far: 'SS_L1', 'SS_L2', 'SS_area', 'SS_sd' and 'var_gp' are defined)
+#' @param objective character string with objective function to use ('SS_L2' is defined)
 #' @param n.split number of splits to be performed
 
 
