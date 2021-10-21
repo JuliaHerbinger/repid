@@ -1,0 +1,81 @@
+---
+title: "Motivation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, cache = TRUE)
+```
+
+## LM: Visualize Interaction Effects
+
+- For LMs we have to include interactions explicitely in order to visualize their effect. 
+- For ML algorithms, we don't because they usually automatically recognize interactions.
+
+```{r, fig.width=12, fig.height=8}
+bike = readRDS("bike.Rds")
+
+library(effects)
+# Marginal effects for lm
+mod = lm(cnt ~ temp + hum + windspeed + season + yr + dayofyear, data = bike)
+plot(allEffects(mod))
+
+# Marginal effects for lm with interaction between categorical and numeric feature
+mod2 = lm(cnt ~ temp + hum + windspeed + season + yr + dayofyear + temp*season, data = bike)
+plot(allEffects(mod2))
+
+# Marginal effects for lm with interaction between categorical and numeric and 2 numeric features
+mod3 = lm(cnt ~ temp + hum + windspeed + season + yr + dayofyear + temp*season + dayofyear*hum, 
+  data = bike)
+plot(allEffects(mod3))
+```
+
+- **AIM:** 
+
+  - We want to produce similar visualizations for arbitrary ML models.
+  - Additionally, we are looking for an procedure that automatically finds interesting interactions in a data-driven way (e.g. using the information from ICE curves).
+
+## ML: Visualize Interaction Effects
+
+- For ML models, we can visualize global main effects (PDP) and local effects (ICE).
+- But: We do not know which interactions were found by the ML model and which ones are interesting to look at.
+
+```{r, fig.width=12, fig.height=8}
+library(iml)
+library(ranger)
+rf = ranger(cnt ~ temp + hum + windspeed + season + yr + dayofyear, data = bike)
+mod = Predictor$new(rf, data = bike, 
+  predict.function = function(model, newdata) predict(model, newdata)$predictions)
+feature = c("temp", "hum", "windspeed", "season", "yr", "dayofyear")
+
+eff = FeatureEffects$new(mod, feature = feature, method = "pdp+ice", grid.size = 20)
+eff$plot()
+```
+
+
+We can visualize interactions in a 2-dimensional PDP plot:
+
+1. interaction between numeric and categorical features
+
+```{r, fig.width=12, fig.height=8}
+eff2 = FeatureEffect$new(mod, feature = c("temp", "season"), method = "pdp", grid.size = 20)
+eff$plot() + eff2$plot()
+```
+
+2. interaction between numeric and categorical, and between 2 numeric features
+
+```{r, fig.width=12, fig.height=8}
+eff3 = FeatureEffect$new(mod, feature = c("hum", "dayofyear"), method = "pdp", grid.size = 20)
+eff$plot() + eff2$plot() + eff3$plot()
+```
+
+
+## Issues
+
+- 2d PDPs are computationally expensive but show interaction effects as a heatmap.
+- **Idea:** Instead, we use the information from ICE curves to find interactions and produce visualizations for the most interesting interactions as follows:
+    
+  1. Compute ICE curves for feature of interest
+  2. Check if the ICE curves can be splitted by another feature (-> potential interaction)
+  3. The feature that most likely interacts with our feature of interest has lowest objective.
+  4. We can even get a ranking (sorted according to the objective) of which other feature might also interact with our feature of interest.
