@@ -8,18 +8,17 @@ simulations and the real-world example.
 This repository is structured as follows:
 
 ``` 
-    
+    ├── R/                      # All implemented methods and general helper functions                          
+    |   ├── simulations/        # Scripts for simulation examples in paper
+    |   |   ├── analysis/       # Scripts used to create figures and tables in the paper for simulation examples
+    |   |   ├── batchtools/     # Scripts used to create data for more complex simulation examples (Sec. 4.2, A.4)
+    |   ├── real_world_example/ # Script used to create figure for titanic example in Section 5
     ├── data/                   # Location where all generated data are stored
     │   ├── batchtools/         # Location where generated data of batchtools experiments are stored
     │   ├── sim_vine_vs_repid/  # Location where generated data of 1. simulation example (VINE vs. REPID) are stored
     │   ├── sim_weak/           # Location where generated data of 2. simulation example (Weaknesses of other methods) are stored
     │   ├── titanic/            # Location where pre-processed data of titanic example are stored
     |   notebooks/              # Python and R notebooks to generate data for VINE and titanic example
-    ├── R/                      # All implemented methods and general helper functions                          
-    |   ├── simulations/        # Scripts for simulation examples in paper
-    |   |   ├── analysis/       # Scripts used to create figures and tables in the paper for simulation examples
-    |   |   ├── batchtools/     # Scripts used to create data for more complex simulation examples (Sec. 4.2, A.4)
-    |   ├── real_world_example/ # Script used to create figure for titanic example in Section 5
     ├── LICENSE
     └── README.md               
 ```
