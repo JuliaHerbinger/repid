@@ -39,6 +39,45 @@ get_sim_results = function(data, job, instance, feature, learner, n.split, impr.
     
   }
   
+  else if(learner == "ranger_exact"){
+    if(job$prob.pars$type == "numeric_linear"){
+      interaction_constraint_list = "[[1,2],[1,3],[1,4]]"
+      #formula = y~x1+x2+x3+x4+x5+x6+x7 + x2*x3 + x2*x4 + x2*x5
+    }
+    if(job$prob.pars$type == "friedman"){
+      interaction_constraint_list = "[[0,2]]"
+      #formula = y~x1*x2+x3+x4+x5+x6+x7+x8+x9+x10
+    }
+    if(job$prob.pars$type == "nonlinear"){
+      interaction_constraint_list = "[[0,2,3],[2,4],[2,6],[2,8]]"
+      #formula = y~x1*x2*x3 + x2*x4 + x6*x2 + x8*x2 +x3+x4+x5+x6+x7+x8+x9+x10
+    }
+    #mod = ranger(formula = formula,data=data)
+    library(mlr3)
+    task = TaskRegr$new(id = "test", backend = data, target = "y")
+    lrn.xgb = lrn("regr.xgboost", objective = "reg:squarederror",
+                  eta = 0.1,  nrounds = 1000,
+                 # eta = 1,
+                 # num_parallel_tree = 500,
+                 # subsample = 0.63,
+                 # colsample_bynode = floor(sqrt(10)) / 10,
+                 # lambda = 0,
+                 # max_depth = 20,
+                 # min_child_weight = 2,
+                 # nrounds = 1,
+                 # verbose = 0,
+                  interaction_constraints = interaction_constraint_list)
+    
+    mod = lrn.xgb$train(task)
+    #predict.function = function(model, newdata) predict(model, newdata)
+    model = Predictor$new(mod, data = X, y = data$y)
+    #test_data = expand_dataset(formula, testdata)
+    pred = lrn.xgb$predict_newdata(task = task,  newdata = testdata)
+    perf.test = mlr3measures::mse(truth = pred$truth, response = pred$response)
+    #perf.test = measureMSE(pred$data$truth, pred$data$response)
+    
+  }
+  
   else{
    
     task = mlr::makeRegrTask(data = data, target = "y")
@@ -48,7 +87,7 @@ get_sim_results = function(data, job, instance, feature, learner, n.split, impr.
     
     # performance on training data - sanity check how good ML model adjusts to underlying function
     pred = predict(object = mod, newdata = testdata)
-    perf.test = measureMSE(pred$data$truth, pred$data$response)
+    perf.test = mlr::measureMSE(pred$data$truth, pred$data$response)
   }
   
   effect = FeatureEffect$new(model, method = "ice", grid.size = 20, feature = feature)
@@ -82,6 +121,20 @@ get_sim_results = function(data, job, instance, feature, learner, n.split, impr.
   return(list("result.tree" = as.data.frame(tree.result),  "hstatistic" = hstat,  "effect" = effect, "perf.test" = perf.test))
 }
 
+
+# helper function for ranger
+expand_dataset <- function(formula, data) {
+  require(dplyr)
+  
+  form_split <- gsub(":", "*", as.character(formula)) 
+  form_corr <- as.formula(paste(form_split[2], form_split[1], form_split[3]))
+  
+  response = form_split[[2]]
+  
+  model.matrix(form_corr, data) %>% 
+    as_data_frame  %>% 
+    bind_cols(data[c(response)])
+}
 
 # helper function to transform data for analysis
 data_prep_sim_complex = function(data, impr.par = 0.15){

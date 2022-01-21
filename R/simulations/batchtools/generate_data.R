@@ -25,15 +25,15 @@ source("R/simulations/batchtools/simulation_setting_definition.R")
 
 # add problems and setting definitions
 addProblem(name = "interaction_det_ind", fun = create_sim_data, reg = reg)
-pdes = expand.grid(n = c(2000, 5000), type = rep(c("numeric_linear", "linear_mixed", "nonlinear","nonlinear"), each = 3))
+pdes = expand.grid(n = c(2000, 5000), type = rep(c("numeric_linear", "nonlinear","nonlinear"), each = 4))
 pdes = list("interaction_det_ind" = pdes)
 
 # add aglorithms
 
 # define configurations
 ades = data.table(impr.par = list(list(0.1, 0.15, 0.2,0.25)), n.split = 7, stringsAsFactors = FALSE)
-ades = cbind(ades, feature = c(rep(("x2"),18),rep(("x10"),6)))
-ades = cbind(ades, learner = c(rep(rep(c("lm","regr.ranger","regr.ksvm"),each = 2),2),rep(rep(c("gam","regr.ranger","regr.ksvm"),each = 2),2)))
+ades = cbind(ades, feature = c(rep(("x2"),16),rep(("x10"),8)))
+ades = cbind(ades, learner = c(rep(rep(c("lm","regr.ranger","regr.ksvm", "ranger_exact"),each = 2),1),rep(rep(c("gam","regr.ranger","regr.ksvm", "ranger_exact"),each = 2),2)))
 
 ALGORITHMS = list(
   get_sim_results = list(fun = get_sim_results, ades = ades
@@ -58,8 +58,8 @@ addExperiments(
 
 
 # --- 3. SUBMIT JOBS
-Sys.time()
-submitJobs(ids = reg$defs$def.id)
-Sys.time()
+# Sys.time()
+# submitJobs(ids = reg$defs$def.id)
+# Sys.time()
 
 

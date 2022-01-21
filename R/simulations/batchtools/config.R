@@ -20,7 +20,9 @@ packages = c(
   "data.table",
   "dplyr",
   "checkmate",
-  "rlist"
+  "rlist",
+  "mlr3",
+  "mlr3learners"
 ) 
 
 lapply(packages, library, character.only = TRUE)

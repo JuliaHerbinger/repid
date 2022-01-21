@@ -17,7 +17,7 @@ source("R/simulations/helper_simulation.R")
 # path to folder, with folders for dataset results
 path = "data/batchtools/1_result_tables/"
 datasets = list.files(path)
-type = c( "numeric_linear","linear_mixed", "nonlinear")
+type = c( "numeric_linear", "nonlinear")
 
 # create list with one list containing one dataframe per dataset
 data_all = lapply(type, function(typ){
@@ -59,14 +59,14 @@ data_plot$method = factor(data_plot$method, levels = c("REPID", "H-Statistic" ))
 
 feature = "x2"
 n = 2000
-data_plot_x2 = data_plot[data_plot$feature==feature & data_plot$n ==n,]
+data_plot_x2 = data_plot[data_plot$feature==feature & data_plot$n ==n & (data_plot$learner %in% c("gam", "ranger_exact")),]
 
 p1 = ggplot(data_plot_x2, aes(x = interact.feature, y = interaction, fill = learner)) + 
   facet_grid(vars(method)) + 
   geom_boxplot(aes(fill = learner)) +
   ylab("Interaction Strength") + xlab("Feature") + theme_bw() +
   theme(legend.position="top", legend.text=element_text(size=16), text = element_text(size = 16)) +
-  scale_fill_manual(values = c(brewer.pal(3,"Dark2")),name = "", labels = c("GAM", "SVM", "RF"))
+  scale_fill_manual(values = c(brewer.pal(3,"Dark2")),name = "", labels = c("GAM", "XGBOOST"))
 
 ggsave("figures/sim_nonlinear_x2.pdf", p1, width = 8, height = 4.8)
 
@@ -89,8 +89,8 @@ p2 = ggplot(data_plot2_x2, aes(x = interact.feature, y = interaction, fill = lea
   geom_boxplot(aes(fill = learner)) +
   ylab("Interaction Strength") + xlab("Feature") + theme_bw() +
   theme(legend.position="top", legend.text=element_text(size=16), text = element_text(size = 16)) +
-  scale_fill_manual(values = c(brewer.pal(3,"Dark2")),name = "", 
-                    labels = c("GAM", "SVM", "RF"))
+  scale_fill_manual(values = c(brewer.pal(4,"Dark2")),name = "", 
+                    labels = c("GAM","XGBOOST", "SVM", "RF"))
 
 ggsave("figures/app_nonlinear_x2_imprpar.pdf", p2, width = 8, height = 6)
 
@@ -104,8 +104,8 @@ p3 = ggplot(data_plot_x10, aes(x = interact.feature, y = interaction, fill = lea
   geom_boxplot(aes(fill = learner)) +
   ylab("Interaction Strength") + xlab("Feature") + theme_bw() +
   theme(legend.position="top", legend.text=element_text(size=16), text = element_text(size = 16)) +
-  scale_fill_manual(values = c(brewer.pal(3,"Dark2")),name = "", 
-                    labels = c("GAM", "SVM", "RF"))
+  scale_fill_manual(values = c(brewer.pal(4,"Dark2")),name = "", 
+                    labels = c("GAM","XGBOOST", "SVM", "RF"))
 
 ggsave("figures/app_nonlinear_x10.pdf", p3, width = 8, height = 4.8)
 
@@ -131,8 +131,8 @@ p4 = ggplot(data_plot_x2, aes(x = interact.feature, y = interaction, fill = lear
   geom_boxplot(aes(fill = learner)) +
   ylab("Interaction Strength") + xlab("Feature") + theme_bw() +
   theme(legend.position="top", legend.text=element_text(size=16), text = element_text(size = 16)) +
-  scale_fill_manual(values = c(brewer.pal(3,"Dark2")),name = "", 
-                    labels = c("GAM", "SVM", "RF"))
+  scale_fill_manual(values = c(brewer.pal(4,"Dark2")),name = "", 
+                    labels = c("LM","XGBOOST", "SVM", "RF"))
 
 ggsave("figures/app_linear_x2.pdf", p4, width = 8, height = 4.8)
 
@@ -150,8 +150,8 @@ p5 = ggplot(data_plot2_x2, aes(x = interact.feature, y = interaction, fill = lea
   geom_boxplot(aes(fill = learner)) +
   ylab("Interaction Strength") + xlab("Feature") + theme_bw() +
   theme(legend.position="top", legend.text=element_text(size=16), text = element_text(size = 16)) +
-  scale_fill_manual(values = c(brewer.pal(3,"Dark2")),name = "", 
-                    labels = c("GAM", "SVM", "RF"))
+  scale_fill_manual(values = c(brewer.pal(4,"Dark2")),name = "", 
+                    labels = c("LM","XGBOOST", "SVM", "RF"))
 
 
 # save figure

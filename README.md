@@ -8,17 +8,18 @@ simulations and the real-world example.
 This repository is structured as follows:
 
 ``` 
-    ├── R/                      # All implemented methods and general helper functions                          
-    |   ├── simulations/        # Scripts for simulation examples in paper
-    |   |   ├── analysis/       # Scripts used to create figures and tables in the paper for simulation examples
-    |   |   ├── batchtools/     # Scripts used to create data for more complex simulation examples (Sec. 4.2, A.4)
-    |   ├── real_world_example/ # Script used to create figure for titanic example in Section 5
-    ├── data/                   # Location where all generated data are stored
-    │   ├── batchtools/         # Location where generated data of batchtools experiments are stored
-    │   ├── sim_vine_vs_repid/  # Location where generated data of 1. simulation example (VINE vs. REPID) are stored
-    │   ├── sim_weak/           # Location where generated data of 2. simulation example (Weaknesses of other methods) are stored
-    │   ├── titanic/            # Location where pre-processed data of titanic example are stored
-    |   notebooks/              # Python and R notebooks to generate data for VINE and titanic example
+    ├── R/                       # All implemented methods and general helper functions                          
+    |   ├── simulations/         # Scripts for simulation examples in paper
+    |   |   ├── analysis/        # Scripts used to create figures and tables in the paper for simulation examples
+    |   |   ├── batchtools/      # Scripts used to create data for more complex simulation examples (Sec. 4.2, Appendix B)
+    |   ├── real_world_examples/ # Scripts used for modelling and to create figures for real-world examples in Section 5 and Appendix B
+    ├── data/                    # Location where all generated data are stored
+    │   ├── batchtools/          # Location where generated data of batchtools experiments are stored
+    │   ├── sim_vine_vs_repid/   # Location where generated data of 1. simulation example (VINE vs. REPID) are stored
+    │   ├── sim_weak/            # Location where generated data of 2. simulation example (Weaknesses of other methods) are stored
+    │   ├── titanic/             # Location where pre-processed data of titanic example are stored
+    |   ├── california_housing/  # Location where pre-processed data of california housing example are stored
+    |   notebooks/               # Python and R notebooks to generate data for VINE and titanic example
     ├── LICENSE
     └── README.md               
 ```
@@ -27,7 +28,7 @@ This repository is structured as follows:
 
 ## Reproduce Experiments
 
-Steps to reproduce the experiments of Section 4.2 and A.4.
+Steps to reproduce the experiments of Section 4.2 and Appendix B.2.
 
 1.  Install all required packages.
 
@@ -38,7 +39,7 @@ Steps to reproduce the experiments of Section 4.2 and A.4.
 install.packages(c("ranger", "dplyr", "batchtools", "mlr", "ggplot2", "gridExtra", "tidyr", "reshape2",
 "ggpubr", "BBmisc", "data.table", "stringi", "stringr", "checkmate", "kernlab", "xtable", "devtools",
 "tidyverse", "Rmalschains", "iml","kmlShape","dtw","egg","rlist","mgcv","mvtnorm", "vip", "data.table",
-"e1071", "RColorBrewer", "R6", "sfsmisc"))
+"e1071", "RColorBrewer", "R6", "sfsmisc", "mlr3", "xgboost"))
 
 
 # from github
@@ -51,8 +52,8 @@ devtools::install_github("giuseppec/featureImportance")
     
 3.  Prepare data for analysis by running the script `R/simulations/reduce_experiments.R`.
 
-4.  To reproduce figures and tables of Section 4.2 and A.4.1 and A.4.2, run the script `R/simulations/analysis/analysis_sim_complex.R`. Figures produced within the script are stored in `figures`.
+4.  To reproduce figures and tables of Section 4.2 and Appendices B.2 and B.3, run the script `R/simulations/analysis/analysis_sim_complex.R`. Figures produced within the script are stored in `figures`.
 
 
-To reproduce the experiments of Section 3 and 4.1, run the scripts `R/simulations/analysis/analysis_sim_vine_vs_repid.R` and `R/simulations/analysis/analysis_sim_weak.R` respectively. To reproduce the results of the real-world example, run the script `R/real_world_example/titanic.R` 
+To reproduce the experiments of Section 3 and 4.1, run the scripts `R/simulations/analysis/analysis_sim_vine_vs_repid.R` and `R/simulations/analysis/analysis_sim_weak.R` respectively. To reproduce the results of the real-world examples, run the scripts in `R/real_world_example/` 
 
